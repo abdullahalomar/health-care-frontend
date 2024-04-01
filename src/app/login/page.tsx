@@ -10,6 +10,7 @@ import { Box, Button, Container, Grid, Stack, Typography } from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { FieldValues } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -21,9 +22,10 @@ export const validationSchema = z.object({
 
 const LoginPage = () => {
   const router = useRouter();
+  const [error, setError] = useState("");
 
   const handleLogin = async (values: FieldValues) => {
-    console.log(values);
+    // console.log(values);
 
     try {
       const res = await userLogin(values);
@@ -32,6 +34,9 @@ const LoginPage = () => {
         toast.success(res?.message);
         storeUserInfo({ accessToken: res?.data?.accessToken });
         router.push("/");
+      } else {
+        setError(res.message);
+        // console.log(res);
       }
     } catch (error: any) {
       console.error(error.message);
@@ -63,10 +68,29 @@ const LoginPage = () => {
               </Typography>
             </Box>
           </Stack>
+
+          {error && (
+            <Box>
+              <Typography
+                sx={{
+                  color: "#D74B76",
+                  marginTop: "15px",
+                  fontSize: "20px",
+                }}
+              >
+                {error}
+              </Typography>
+            </Box>
+          )}
+
           <Box>
             <PHForm
               onSubmit={handleLogin}
               resolver={zodResolver(validationSchema)}
+              defaultValues={{
+                email: "",
+                password: "",
+              }}
             >
               <Grid container spacing={3} my={1}>
                 <Grid item md={12}>
@@ -76,7 +100,6 @@ const LoginPage = () => {
                     type="email"
                     fullWidth={true}
                     size={"small"}
-                    required={true}
                   />
                 </Grid>
                 <Grid item md={12}>
@@ -86,18 +109,13 @@ const LoginPage = () => {
                     type="password"
                     fullWidth={true}
                     size={"small"}
-                    required={true}
                   />
                 </Grid>
               </Grid>
               <Typography mb={1} textAlign="end" component="p" fontWeight={300}>
                 Forgot password
               </Typography>
-              <Button
-                type="submit"
-                sx={{ margin: "10px 0px" }}
-                fullWidth={true}
-              >
+              <Button type="submit" sx={{ margin: "10px 0px" }}>
                 Login
               </Button>
             </PHForm>

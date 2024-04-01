@@ -9,7 +9,7 @@ import {
   Typography,
 } from "@mui/material";
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
 import assets from "@/assets";
 import Link from "next/link";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
@@ -21,9 +21,36 @@ import { userLogin } from "@/services/actions/userLogin";
 import { storeUserInfo } from "@/services/auth.serveces";
 import PHForm from "@/components/Forms/PHForm";
 import PHInput from "@/components/Forms/PHInput";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+export const patientValidationSchema = z.object({
+  name: z.string().min(1, "Please enter your name!"),
+  email: z.string().email("Please enter your valid email!"),
+  contactNumber: z
+    .string()
+    .regex(/^\d{11}$/, "Please enter your valid phone number!"),
+  address: z.string().min(1, "Please enter your address!"),
+});
+
+export const validationSchema = z.object({
+  password: z.string().min(6, "Must be at least 6 character"),
+  patient: patientValidationSchema,
+});
+
+export const defaultValues = {
+  password: "",
+  patient: {
+    name: "",
+    email: "",
+    contactNumber: "",
+    address: "",
+  },
+};
 
 const RegisterPage = () => {
   const router = useRouter();
+  const [error, setError] = useState("");
 
   const handleRegister = async (values: FieldValues) => {
     const data = modifyPayload(values);
@@ -42,6 +69,8 @@ const RegisterPage = () => {
           storeUserInfo({ accessToken: result?.data?.accessToken });
           router.push("/");
         }
+      } else {
+        setError(res.message);
       }
     } catch (error: any) {
       console.error(error.message);
@@ -73,8 +102,25 @@ const RegisterPage = () => {
               </Typography>
             </Box>
           </Stack>
+          {error && (
+            <Box>
+              <Typography
+                sx={{
+                  color: "#D74B76",
+                  marginTop: "15px",
+                  fontSize: "20px",
+                }}
+              >
+                {error}
+              </Typography>
+            </Box>
+          )}
           <Box>
-            <PHForm onSubmit={handleRegister}>
+            <PHForm
+              onSubmit={handleRegister}
+              resolver={zodResolver(validationSchema)}
+              defaultValues={defaultValues}
+            >
               <Grid container spacing={3} my={1}>
                 <Grid item md={12}>
                   <PHInput
@@ -82,7 +128,6 @@ const RegisterPage = () => {
                     label="Name"
                     fullWidth={true}
                     size={"small"}
-                    required={true}
                   />
                 </Grid>
                 <Grid item md={6}>
@@ -92,7 +137,6 @@ const RegisterPage = () => {
                     type="email"
                     fullWidth={true}
                     size={"small"}
-                    required={true}
                   />
                 </Grid>
                 <Grid item md={6}>
@@ -102,7 +146,6 @@ const RegisterPage = () => {
                     fullWidth={true}
                     name="password"
                     size={"small"}
-                    required={true}
                   />
                 </Grid>
                 <Grid item md={6}>
@@ -112,7 +155,6 @@ const RegisterPage = () => {
                     fullWidth={true}
                     name="patient.contactNumber"
                     size={"small"}
-                    required={true}
                   />
                 </Grid>
                 <Grid item md={6}>
@@ -122,7 +164,6 @@ const RegisterPage = () => {
                     fullWidth={true}
                     name="patient.address"
                     size={"small"}
-                    required={true}
                   />
                 </Grid>
               </Grid>
