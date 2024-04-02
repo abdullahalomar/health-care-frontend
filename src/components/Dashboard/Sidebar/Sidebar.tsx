@@ -1,52 +1,22 @@
-import {
-  Box,
-  Divider,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Stack,
-  Toolbar,
-  Typography,
-} from "@mui/material";
-import React from "react";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
+import { Box, List, Stack, Typography } from "@mui/material";
+import React, { useEffect, useState } from "react";
+
 import assets from "@/assets";
 import Image from "next/image";
 import Link from "next/link";
+import { drawerItems } from "@/utils/drawerItems";
+import { UserRole } from "@/types";
+import SidebarItem from "./SidebarItem";
+import { getUserInfo } from "@/services/auth.serveces";
 
 const SideBar = () => {
-  const drawer = (
-    <div>
-      <List>
-        {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-      <Divider />
-      <List>
-        {["All mail", "Trash", "Spam"].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-    </div>
-  );
+  const [userRole, setUserRole] = useState("");
+
+  useEffect(() => {
+    const { role } = getUserInfo() as any;
+    setUserRole(role);
+  }, []);
+
   return (
     <Box>
       <Stack
@@ -66,7 +36,11 @@ const SideBar = () => {
           Health Care
         </Typography>
       </Stack>
-      {drawer}
+      <List>
+        {drawerItems(userRole as UserRole).map((item, index) => (
+          <SidebarItem key={index} item={item} />
+        ))}
+      </List>
     </Box>
   );
 };
