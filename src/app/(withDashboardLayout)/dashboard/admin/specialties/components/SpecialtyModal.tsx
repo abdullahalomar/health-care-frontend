@@ -23,7 +23,7 @@ const SpecialtyModal = ({ open, setOpen }: TProps) => {
       console.log(res);
 
       if (res?.id) {
-        toast.success("Specialty created successfully");
+        toast.success("Specialty added successfully");
         setOpen(false);
       }
     } catch (error: any) {
@@ -32,7 +32,7 @@ const SpecialtyModal = ({ open, setOpen }: TProps) => {
   };
   return (
     <div>
-      <PHModal open={open} setOpen={setOpen} title="Create A New Specialist">
+      <PHModal open={open} setOpen={setOpen} title="Add A New Specialist">
         <PHForm onSubmit={handleFormSubmit}>
           <Grid container spacing={2}>
             <Grid item md={6}>
