@@ -31,28 +31,26 @@ const SpecialtyModal = ({ open, setOpen }: TProps) => {
     }
   };
   return (
-    <div>
-      <PHModal open={open} setOpen={setOpen} title="Add A New Specialist">
-        <PHForm onSubmit={handleFormSubmit}>
-          <Grid container spacing={2}>
-            <Grid item md={6}>
-              <PHInput
-                name="title"
-                label="title"
-                size={"small"}
-                fullWidth={false}
-              />
-            </Grid>
-            <Grid item md={6}>
-              <PHFileUploader name="file" label="Upload File"></PHFileUploader>
-            </Grid>
+    <PHModal open={open} setOpen={setOpen} title="Add A New Specialist">
+      <PHForm onSubmit={handleFormSubmit}>
+        <Grid container spacing={2}>
+          <Grid item md={6}>
+            <PHInput
+              name="title"
+              label="title"
+              size={"small"}
+              fullWidth={false}
+            />
           </Grid>
-          <Button sx={{ mt: 1 }} type="submit">
-            ADD
-          </Button>
-        </PHForm>
-      </PHModal>
-    </div>
+          <Grid item md={6}>
+            <PHFileUploader name="file" label="Upload File"></PHFileUploader>
+          </Grid>
+        </Grid>
+        <Button sx={{ mt: 1 }} type="submit">
+          ADD
+        </Button>
+      </PHForm>
+    </PHModal>
   );
 };
 

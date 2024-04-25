@@ -21,7 +21,7 @@ const SpecialtiesPage = () => {
     try {
       const res = await deleteSpecialty(id).unwrap();
       if (res?.id) {
-        toast.success("Specialty deleted successfully!!");
+        toast.success("Specialty removed successfully!!");
       }
     } catch (error: any) {
       console.error(error.message);

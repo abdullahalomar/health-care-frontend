@@ -3,21 +3,21 @@ import { IDoctor } from "@/types/doctor";
 import { tagTypes } from "../tag-types";
 import { baseApi } from "./baseApi";
 
-const doctorApi = baseApi.injectEndpoints({
+const scheduleApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
-    createDoctor: build.mutation({
+    createSchedule: build.mutation({
       query: (data) => ({
-        url: "user/create-doctor",
+        url: "schedule",
         method: "POST",
         contentType: "multipart/form-data",
         data,
       }),
-      invalidatesTags: [tagTypes.doctor],
+      invalidatesTags: [tagTypes.schedule],
     }),
 
-    getAllDoctors: build.query({
+    getAllSchedules: build.query({
       query: (arg: Record<string, any>) => ({
-        url: "doctor",
+        url: "schedule",
         method: "GET",
         params: arg,
       }),
@@ -30,7 +30,7 @@ const doctorApi = baseApi.injectEndpoints({
       providesTags: [tagTypes.doctor],
     }),
 
-    deleteDoctor: build.mutation({
+    deleteSchedule: build.mutation({
       query: (id) => ({
         url: `/doctor/soft/${id}`,
         method: "DELETE",
@@ -41,7 +41,7 @@ const doctorApi = baseApi.injectEndpoints({
 });
 
 export const {
-  useCreateDoctorMutation,
-  useGetAllDoctorsQuery,
-  useDeleteDoctorMutation,
-} = doctorApi;
+  useCreateScheduleMutation,
+  useGetAllSchedulesQuery,
+  useDeleteScheduleMutation,
+} = scheduleApi;
