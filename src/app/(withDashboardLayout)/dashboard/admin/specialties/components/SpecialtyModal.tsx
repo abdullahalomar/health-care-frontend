@@ -48,7 +48,7 @@ const SpecialtyModal = ({ open, setOpen }: TProps) => {
             </Grid>
           </Grid>
           <Button sx={{ mt: 1 }} type="submit">
-            Create
+            ADD
           </Button>
         </PHForm>
       </PHModal>

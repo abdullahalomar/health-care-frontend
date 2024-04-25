@@ -3,7 +3,7 @@ import PHForm from "@/components/Forms/PHForm";
 import PHInput from "@/components/Forms/PHInput";
 import PHSelectField from "@/components/Forms/PHSelectField";
 import PHFullScreenModal from "@/components/shared/PHModal/PHFullScreenModal";
-import { useCreateSpecialtyMutation } from "@/redux/api/specialtiesApi";
+import { useCreateDoctorMutation } from "@/redux/api/doctorApi";
 import { Gender } from "@/types";
 import { modifyPayload } from "@/utils/modifyPayload";
 import { Button, Grid } from "@mui/material";
@@ -16,8 +16,20 @@ type TProps = {
 };
 
 const DoctorModal = ({ open, setOpen }: TProps) => {
-  const onSubmit = async (values: FieldValues) => {
+  const [createDoctor] = useCreateDoctorMutation();
+  const handleFormSubmit = async (values: FieldValues) => {
+    // console.log(values);
+    values.doctor.experience = Number(values.doctor.experience);
+    values.doctor.apointmentFee = Number(values.doctor.apointmentFee);
+    const data = modifyPayload(values);
     try {
+      const res = await createDoctor(data).unwrap();
+      // console.log(res);
+
+      if (res?.id) {
+        toast.success("Doctor Created Successfully!!");
+        setOpen(false);
+      }
     } catch (error: any) {
       console.error(error.message);
     }
@@ -44,7 +56,7 @@ const DoctorModal = ({ open, setOpen }: TProps) => {
   return (
     <div>
       <PHFullScreenModal open={open} setOpen={setOpen} title="Add A New Doctor">
-        <PHForm onSubmit={onSubmit} defaultValues={defaultValues}>
+        <PHForm onSubmit={handleFormSubmit} defaultValues={defaultValues}>
           <Grid container spacing={2} sx={{ my: 5 }}>
             <Grid item xs={12} sm={12} md={4}>
               <PHInput
@@ -119,7 +131,7 @@ const DoctorModal = ({ open, setOpen }: TProps) => {
                 label="Gender"
                 sx={{ mb: 2 }}
                 size={"small"}
-                fullWidth={false}
+                fullWidth={true}
               />
             </Grid>
             <Grid item xs={12} sm={12} md={4}>
