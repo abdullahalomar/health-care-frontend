@@ -1,5 +1,4 @@
 import { IMeta } from "./../../types/common";
-import { IDoctor } from "@/types/doctor";
 import { tagTypes } from "../tag-types";
 import { baseApi } from "./baseApi";
 
