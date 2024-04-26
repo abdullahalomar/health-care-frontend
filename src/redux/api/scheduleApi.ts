@@ -9,7 +9,6 @@ const scheduleApi = baseApi.injectEndpoints({
       query: (data) => ({
         url: "schedule",
         method: "POST",
-        contentType: "multipart/form-data",
         data,
       }),
       invalidatesTags: [tagTypes.schedule],
@@ -21,13 +20,13 @@ const scheduleApi = baseApi.injectEndpoints({
         method: "GET",
         params: arg,
       }),
-      transformResponse: (response: IDoctor[], meta: IMeta) => {
+      transformResponse: (response: [], meta: IMeta) => {
         return {
-          doctors: response,
+          schedules: response,
           meta,
         };
       },
-      providesTags: [tagTypes.doctor],
+      providesTags: [tagTypes.schedule],
     }),
 
     deleteSchedule: build.mutation({
@@ -35,7 +34,7 @@ const scheduleApi = baseApi.injectEndpoints({
         url: `/doctor/soft/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: [tagTypes.doctor],
+      invalidatesTags: [tagTypes.schedule],
     }),
   }),
 });
