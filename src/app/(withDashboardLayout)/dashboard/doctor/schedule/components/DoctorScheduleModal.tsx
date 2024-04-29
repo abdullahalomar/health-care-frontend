@@ -7,6 +7,10 @@ import { useState } from "react";
 import dayjs, { Dayjs } from "dayjs";
 import { useGetAllSchedulesQuery } from "@/redux/api/scheduleApi";
 import MultipleSelectFieldChip from "./multipleSelectFieldChip";
+import { Stack } from "@mui/material";
+import LoadingButton from "@mui/lab/LoadingButton";
+import { useCreateDoctorScheduleMutation } from "@/redux/api/doctorScheduleApi";
+import { toast } from "sonner";
 
 type TProps = {
   open: boolean;
@@ -18,7 +22,7 @@ const DoctorScheduleModal = ({ open, setOpen }: TProps) => {
     dayjs(new Date()).toISOString()
   );
 
-  const [selectedScheduleIds, setSelectedScheduleIds] = useState();
+  const [selectedScheduleIds, setSelectedScheduleIds] = useState([]);
 
   // console.log(selectedDate);
   const query: Record<string, any> = {};
@@ -35,22 +39,54 @@ const DoctorScheduleModal = ({ open, setOpen }: TProps) => {
       .toISOString();
   }
 
-  const { data, isLoading } = useGetAllSchedulesQuery(query);
+  const { data } = useGetAllSchedulesQuery(query);
   const schedule = data?.schedules;
   // console.log(schedule);
 
+  const [createDoctorSchedule, { isLoading }] =
+    useCreateDoctorScheduleMutation();
+
+  const onSubmit = async () => {
+    try {
+      const res = await createDoctorSchedule({
+        scheduleIds: selectedScheduleIds,
+      });
+      toast.success("Doctor schedule Added Successfully");
+      setOpen(false);
+      // console.log(res);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <PHModal open={open} setOpen={setOpen} title="Add Doctor Schedule">
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <DatePicker
-          label="Controlled picker"
-          value={dayjs(selectedDate)}
-          onChange={(newValue) =>
-            setSelectedDate(dayjs(newValue).toISOString())
-          }
+      <Stack direction="column" gap={2}>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DatePicker
+            label="Controlled picker"
+            value={dayjs(selectedDate)}
+            onChange={(newValue) =>
+              setSelectedDate(dayjs(newValue).toISOString())
+            }
+            sx={{ width: "100%" }}
+          />
+        </LocalizationProvider>
+        <MultipleSelectFieldChip
+          schedules={schedule}
+          selectedScheduleIds={selectedScheduleIds}
+          setSelectedScheduleIds={setSelectedScheduleIds}
         />
-      </LocalizationProvider>
-      <MultipleSelectFieldChip schedules={schedule} />
+        <LoadingButton
+          size="small"
+          onClick={onSubmit}
+          loading={isLoading}
+          loadingIndicator="Submitting..."
+          variant="contained"
+        >
+          <span>Add Schedule</span>
+        </LoadingButton>
+      </Stack>
     </PHModal>
   );
 };
