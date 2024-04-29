@@ -4,23 +4,24 @@ import { Box, Button, Typography, IconButton } from "@mui/material";
 import DoctorScheduleModal from "./components/DoctorScheduleModal";
 
 import { useEffect, useState } from "react";
-import { useDeleteScheduleMutation } from "@/redux/api/scheduleApi";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { toast } from "sonner";
 import { dateFormatter } from "@/utils/dateFormatter";
 import dayjs from "dayjs";
 import { ISchedule } from "@/types/schedule";
-import { useGetAllDoctorSchedulesQuery } from "@/redux/api/doctorScheduleApi";
+import {
+  useDeleteDoctorScheduleMutation,
+  useGetAllDoctorSchedulesQuery,
+} from "@/redux/api/doctorScheduleApi";
 
 const DoctorSchedulePage = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   const [allSchedule, setAllSchedule] = useState<any>([]);
   const { data, isLoading } = useGetAllDoctorSchedulesQuery({});
+  const [deleteDoctorSchedule] = useDeleteDoctorScheduleMutation();
   // console.log(data);
-
-  // const [deleteSchedule] = useDeleteScheduleMutation();
 
   const schedules = data?.doctorSchedules;
   const meta = data?.meta;
@@ -51,13 +52,24 @@ const DoctorSchedulePage = () => {
       align: "center",
       renderCell: ({ row }) => {
         return (
-          <IconButton aria-label="delete">
+          <IconButton onClick={() => handleDelete(row.id)} aria-label="delete">
             <DeleteIcon />
           </IconButton>
         );
       },
     },
   ];
+
+  const handleDelete = async (id: string) => {
+    try {
+      const res = await deleteDoctorSchedule(id).unwrap();
+      if (res?.id) {
+        toast.success("Schedule removed successfully!!");
+      }
+    } catch (error: any) {
+      console.error(error.message);
+    }
+  };
   return (
     <Box>
       <Button onClick={() => setIsModalOpen(true)}>Add Doctor Schedule</Button>
