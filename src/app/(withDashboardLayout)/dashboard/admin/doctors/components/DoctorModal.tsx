@@ -173,7 +173,7 @@ const DoctorModal = ({ open, setOpen }: TProps) => {
             </Grid>
           </Grid>
           <Button sx={{ mt: 1 }} type="submit">
-            Create
+            Add Doctor
           </Button>
         </PHForm>
       </PHFullScreenModal>
