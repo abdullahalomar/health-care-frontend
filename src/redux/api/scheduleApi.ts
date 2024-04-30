@@ -30,7 +30,7 @@ const scheduleApi = baseApi.injectEndpoints({
 
     deleteSchedule: build.mutation({
       query: (id) => ({
-        url: `/doctor/soft/${id}`,
+        url: `schedule/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: [tagTypes.schedule],
