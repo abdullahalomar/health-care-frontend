@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Button, Typography, IconButton } from "@mui/material";
+import { Box, Button, Typography, IconButton, Pagination } from "@mui/material";
 import DoctorScheduleModal from "./components/DoctorScheduleModal";
 
 import { useEffect, useState } from "react";
@@ -14,23 +14,43 @@ import {
   useDeleteDoctorScheduleMutation,
   useGetAllDoctorSchedulesQuery,
 } from "@/redux/api/doctorScheduleApi";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 
 const DoctorSchedulePage = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
+  const query: Record<string, any> = {};
+
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(3);
+
+  query["page"] = page;
+  query["limit"] = limit;
+
   const [allSchedule, setAllSchedule] = useState<any>([]);
-  const { data, isLoading } = useGetAllDoctorSchedulesQuery({});
+  const { data, isLoading } = useGetAllDoctorSchedulesQuery({ ...query });
   const [deleteDoctorSchedule] = useDeleteDoctorScheduleMutation();
   // console.log(data);
 
   const schedules = data?.doctorSchedules;
   const meta = data?.meta;
 
+  // console.log(schedules);
+
+  let pageCount: number;
+
+  if (meta?.total) {
+    pageCount = Math.ceil(meta.total / limit);
+  }
+
+  const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
+    setPage(value);
+  };
+
   useEffect(() => {
     const updateData = schedules?.map((schedule: ISchedule, index: number) => {
       return {
-        sl: index + 1,
-        id: schedule?.doctorId,
+        id: schedule?.scheduleId,
         startDate: dateFormatter(schedule?.schedule?.startDate),
         startTime: dayjs(schedule?.startDate).format("hh:mm a"),
         endTime: dayjs(schedule?.endDate).format("hh:mm a"),
@@ -40,7 +60,6 @@ const DoctorSchedulePage = () => {
   }, [schedules]);
 
   const columns: GridColDef[] = [
-    { field: "sl", headerName: "SL", flex: 1 },
     { field: "startDate", headerName: "Start Date", flex: 1 },
     { field: "startTime", headerName: "Start Time", flex: 1 },
     { field: "endTime", headerName: "End Time", flex: 1 },
@@ -70,9 +89,16 @@ const DoctorSchedulePage = () => {
       console.error(error.message);
     }
   };
+
   return (
     <Box>
-      <Button onClick={() => setIsModalOpen(true)}>Add Doctor Schedule</Button>
+      <Button
+        onClick={() => setIsModalOpen(true)}
+        endIcon={<AddCircleOutlineIcon />}
+        sx={{ mt: 3 }}
+      >
+        Add Doctor Schedule
+      </Button>
       <DoctorScheduleModal open={isModalOpen} setOpen={setIsModalOpen} />
       <Box sx={{ mb: 5 }}></Box>
       <Box>
@@ -83,7 +109,21 @@ const DoctorSchedulePage = () => {
             <DataGrid
               rows={allSchedule ?? []}
               columns={columns}
-              hideFooter={true}
+              hideFooterPagination
+              slots={{
+                footer: () => {
+                  return (
+                    <Box sx={{ mb: 2 }}>
+                      <Pagination
+                        color="primary"
+                        count={pageCount}
+                        page={page}
+                        onChange={handleChange}
+                      />
+                    </Box>
+                  );
+                },
+              }}
             />
           </Box>
         ) : (
