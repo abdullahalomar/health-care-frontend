@@ -4,7 +4,7 @@ import PHForm from "@/components/Forms/PHForm";
 import PHInput from "@/components/Forms/PHInput";
 import PHSelectField from "@/components/Forms/PHSelectField";
 import {
-  useGetDoctorsQuery,
+  useGetDoctorQuery,
   useUpdateDoctorMutation,
 } from "@/redux/api/doctorApi";
 import { Gender } from "@/types";
@@ -24,7 +24,7 @@ const DoctorUpdatePage = ({ params }: TParams) => {
   const id = params?.doctorId;
   const router = useRouter();
 
-  const { data, isLoading } = useGetDoctorsQuery(id);
+  const { data, isLoading } = useGetDoctorQuery(id);
   const [updateDoctor] = useUpdateDoctorMutation();
   //   console.log(data);
 

@@ -15,7 +15,7 @@ const SpecialtiesApi = baseApi.injectEndpoints({
 
     getAllSpecialties: build.query({
       query: () => ({
-        url: "/specialties",
+        url: "specialties",
         method: "GET",
       }),
       providesTags: [tagTypes.specialties],

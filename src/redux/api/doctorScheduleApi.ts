@@ -1,4 +1,3 @@
-import { useGetDoctorsQuery } from "@/redux/api/doctorApi";
 import { IMeta } from "../../types/common";
 import { tagTypes } from "../tag-types";
 import { baseApi } from "./baseApi";
