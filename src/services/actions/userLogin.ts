@@ -1,6 +1,8 @@
 // "use server";
 
 import { FieldValues } from "react-hook-form";
+import setAccessToken from "./setAccessToken";
+import { redirect } from "next/navigation";
 
 export const userLogin = async (data: FieldValues) => {
   const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/login`, {
@@ -14,5 +16,12 @@ export const userLogin = async (data: FieldValues) => {
   });
 
   const userInfo = await res.json();
+
+  if (userInfo.data.accessToken) {
+    setAccessToken(userInfo.data.accessToken, {
+      redirect: "/dashboard",
+    });
+  }
+
   return userInfo;
 };

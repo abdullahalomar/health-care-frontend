@@ -1,4 +1,5 @@
 export type ISchedule = {
+  scheduleId: any;
   schedule: any;
   doctorId: any;
   id?: string;
