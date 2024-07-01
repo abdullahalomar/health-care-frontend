@@ -1,5 +1,5 @@
-import { authKey } from "@/constants/authKey";
-import { getUserInfo, removeUser } from "@/services/auth.serveces";
+import { logOutUser } from "@/services/actions/logOutUser";
+import { getUserInfo } from "@/services/auth.serveces";
 import { Button } from "@mui/material";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -7,9 +7,9 @@ import { useRouter } from "next/navigation";
 const AuthButton = () => {
   const userInfo = getUserInfo();
   const router = useRouter();
+
   const handleLogOut = () => {
-    localStorage.removeItem(authKey);
-    router.refresh();
+    logOutUser(router);
   };
   return (
     <>
