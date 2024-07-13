@@ -10,6 +10,7 @@ import DescriptionIcon from "@mui/icons-material/Description";
 import PaymentsIcon from "@mui/icons-material/Payments";
 import GradeIcon from "@mui/icons-material/Grade";
 import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
+import KeyIcon from "@mui/icons-material/Key";
 
 export const drawerItems = (role: UserRole): DrawerItem[] => {
   const roleMenus: DrawerItem[] = [];
@@ -19,6 +20,11 @@ export const drawerItems = (role: UserRole): DrawerItem[] => {
       title: "Profile",
       path: `${role}/profile`,
       icon: AssignmentIndIcon,
+    },
+    {
+      title: "Change Password",
+      path: `change-password`,
+      icon: KeyIcon,
     },
   ];
 

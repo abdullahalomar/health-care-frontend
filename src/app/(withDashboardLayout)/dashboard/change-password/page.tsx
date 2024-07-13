@@ -10,8 +10,10 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import PHForm from "@/components/Forms/PHForm";
 import { useChangePasswordMutation } from "@/redux/api/authApi";
-import { error } from "console";
+
 import { toast } from "sonner";
+import { logOutUser } from "@/services/actions/logOutUser";
+import { useRouter } from "next/navigation";
 
 const validationSchema = z.object({
   oldPassword: z.string().min(6, "Must be al least 6 character long"),
@@ -20,13 +22,15 @@ const validationSchema = z.object({
 
 const changePasswordPage = () => {
   const [changePassword] = useChangePasswordMutation(undefined);
+  const router = useRouter();
 
   const onSubmit = async (values: FieldValues) => {
     try {
       const res = await changePassword(values);
-      console.log(res);
+      // console.log(res);
 
-      if (res?.data?.status === 200) {
+      if ("data" in res && res?.data?.status === 200) {
+        logOutUser(router);
       } else {
         throw new Error("Incorrect Password");
       }
